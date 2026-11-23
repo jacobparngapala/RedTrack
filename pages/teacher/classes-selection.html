@@ -234,11 +234,19 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+<<<<<<< HEAD
+=======
+        const database = getDatabase(app);
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
         const importButton = document.getElementById("importClassBtn");
         const classListFile = document.getElementById("classListFile");
         const fileLabel = document.querySelector('label[for="classListFile"]');
         const defaultFileLabel = "Import Class List";
 
+<<<<<<< HEAD
+=======
+        // Prevent multiple event listeners
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
         importButton.removeEventListener("click", importClass);
         importButton.addEventListener("click", importClass);
 
@@ -386,12 +394,62 @@
 
                 reader.readAsText(file);
 
+<<<<<<< HEAD
+=======
+                function saveClassToFirebase() {
+                    // Save class details
+                    set(ref(db, classPath), {
+                        course,
+                        section,
+                        room,
+                        startTime,
+                        endTime,
+                        students
+                    }).then(() => {
+                        alert("Class imported successfully!");
+                        clearInputFields();
+
+                        // Push attendance records for each student
+                        students.forEach(student => {
+                            const studentId = student.id || student.studentId; // Ensure we get the correct ID
+
+                            if (!studentId) {
+                                console.error("Error: studentId is missing for a student:", student);
+                                return; // Skip if studentId is undefined
+                            }
+
+                            // Generate a unique sessionId based on the current date and time
+                            const sessionId = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-"); // Format: YYYY-MM-DD-HH-mm
+
+                            // Define the attendance path in Firebase
+                            const attendancePath = `attendance/${classId}/${studentId}`;
+
+                            // Push the initial attendance record
+                            set(ref(db, attendancePath), {
+                                id: studentId,
+                                status: "-", // Default status
+                                timestamp: new Date().toISOString() // Set the timestamp
+                            }).then(() => {
+                                console.log(`Attendance initialized for ${studentId}`);
+                            }).catch(error => {
+                                console.error("Firebase Error:", error);
+                            });
+                        });
+
+                    }).catch(err => {
+                        console.error("Error saving data:", err);
+                    }).finally(() => {
+                        importButton.disabled = false;
+                    });
+                }
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
             }).catch(err => {
                 console.error("Error checking class existence:", err);
                 importButton.disabled = false;
             });
         }
 
+<<<<<<< HEAD
         function saveClassToFirebase() {
             // Save class details
             set(ref(db, classPath), {
@@ -439,6 +497,8 @@
             });
         }
 
+=======
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
         function clearInputFields() {
             document.getElementById("course").value = '';
             document.getElementById("section").value = '';
@@ -459,6 +519,19 @@
             $('#toggleSymbol').text('^');
         });
 
+<<<<<<< HEAD
+=======
+        function updateClassButton(classId, course, section, room, startTime, endTime) {
+            const classButton = document.getElementById(`btn-${classId}`);
+            if (classButton) {
+                classButton.innerHTML = `${course} - ${section} - ${room} - [${startTime} - ${endTime}]`;
+            } else {
+                console.warn(`Button for class ${classId} not found!`);
+            }
+        }
+
+
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
         window.onload = function () {
             const teacherID = localStorage.getItem("teacherID");
 
@@ -468,7 +541,11 @@
                 return;
             }
 
+<<<<<<< HEAD
             const attendanceRef = ref(db, `classes/${teacherID}`);
+=======
+            const attendanceRef = ref(database, `classes/${teacherID}`);
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
             const classButtonsContainer = document.getElementById("classButtons");
 
             classButtonsContainer.innerHTML = ""; // Clear previous buttons
@@ -508,6 +585,37 @@
 
         };
 
+<<<<<<< HEAD
+=======
+        function loadClasses() {
+            const dbRef = ref(db, "classes"); // Load all classes
+
+            get(dbRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    console.log("Loaded classes:", snapshot.val()); // Debugging log
+
+                    const classesData = snapshot.val();
+
+                    // Correctly extract teacherId from the outer object
+                    Object.keys(classesData).forEach((teacherId) => {
+                        Object.keys(classesData[teacherId]).forEach((classId) => {
+                            const classInfo = classesData[teacherId][classId];
+
+                            // Ensure teacherId is correctly passed
+                            console.log("Adding button for class:", { teacherId, classId });
+
+                            addClassButton(teacherId, classId, classInfo.course, classInfo.section, classInfo.room, classInfo.startTime, classInfo.endTime);
+                        });
+                    });
+                } else {
+                    console.log("No classes found.");
+                }
+            }).catch((error) => {
+                console.error("Error fetching classes:", error);
+            });
+        }
+
+>>>>>>> 3b776f4899d127eaebfa7e51ce71255028f4d99c
         function removeClass(teacherId, classId, btnContainer) {
             if (!confirm("Are you sure you want to remove this class?")) {
                 return;
