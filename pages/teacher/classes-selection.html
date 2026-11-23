@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <title>RedTrack</title>
+    <link rel="stylesheet" />
+    <style>
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap");
+    </style>
+    <link href="../../assets/css/dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/navbar.css">
+    <link rel="stylesheet" href="../../assets/css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="../../assets/css/classes-selection.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+</head>
+
+
+<!-- navbar -->
+<nav class="navbar" aria-label="Main Navigation">
+    <div class="logo_item">
+        <i class="bx bx-menu" id="sidebarOpen"></i>
+        <strong>RedTrack</strong>
+    </div>
+</nav>
+
+
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar" aria-label="Sidebar Navigation">
+        <div class="menu_content">
+
+            <ul class="menu_items">
+                <div class="menu_title menu_editor"></div>
+                <li class="item active">
+                    <a href="classes-selection.html" class="nav_link">
+                        <span class="navlink_icon">
+                            <i class="bx bx-list-ul"></i>
+                        </span>
+                        <span class="navlink">Classes</span>
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="menu_items">
+                <div class="menu_title menu_setting"></div>
+                <li class="item">
+                    <a href="../../index.html" class="nav_link" id="logoutButton">
+                        <span class="navlink_icon">
+                            <i class="bx bx-log-out"></i>
+                        </span>
+                        <span class="navlink">Logout</span>
+                    </a>
+                </li>
+            </ul>
+            <!-- Sidebar Open / Close -->
+            <div class="bottom_content">
+                <div class="bottom expand_sidebar">
+                    <span> Expand</span>
+                    <i class='bx bx-collapse-horizontal'></i>
+                </div>
+                <div class="bottom collapse_sidebar">
+                    <span> Collapse</span>
+                    <i class='bx bx-collapse-horizontal'></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+</body>
+
+<body class="bg-light">
+    <div class="container mt-5">
+        <h3 class="mt-4">Available Classes</h3>
+        <div id="classButtons" class="mt-2"></div>
+        <div class="card mt-4" id="expandableCard">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="text-center font-weight-bold m-0" style="color: #60100B; opacity: 1;">Import Class List</h2>
+                <button class="toggle-button" onclick="toggleCard()">▼</button>
+            </div>
+            <div id="importClassForm" class="p-4">
+                <form>
+                    <input type="text" id="course" class="form-control mb-3" placeholder="Course Name">
+                    <input type="text" id="section" class="form-control mb-3" placeholder="Section">
+                    <input type="text" id="room" class="form-control mb-3" placeholder="Room">
+                    <div class="d-flex gap-4 mb-4 align-items-end">
+                        <div class="w-25">
+                            <label for="startTime">Start Time:</label>
+                            <input type="text" id="startTime" class="form-control">
+                        </div>
+                        <div class="w-25">
+                            <label for="endTime">End Time:</label>
+                            <input type="text" id="endTime" class="form-control">
+                        </div>
+                        <div class="w-50 custom-file" style="min-width: 200px;">
+                            <input type="file" id="classListFile" accept=".csv"
+                                class="custom-file-input form-control-sm">
+                            <label class="custom-file-label" for="classListFile">Import Class List</label>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="button" id="importClassBtn" class="btn w-100"
+                            style="background-color: #60100B; color: white;">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="importClassForm" class="collapse p-4">
+            <form>
+                <input type="text" id="course" class="form-control mb-3" placeholder="Course Name">
+                <input type="text" id="section" class="form-control mb-3" placeholder="Section">
+                <input type="text" id="room" class="form-control mb-3" placeholder="Room">
+                <div class="d-flex gap-4 mb-4 align-items-end">
+                    <div class="w-25">
+                        <label for="startTime">Start Time:</label>
+                        <input type="text" id="startTime" class="form-control">
+                    </div>
+                    <div class="w-25">
+                        <label for="endTime">End Time:</label>
+                        <input type="text" id="endTime" class="form-control">
+                    </div>
+                    <div class="w-50 custom-file" style="min-width: 200px;">
+                        <input type="file" id="classListFile" accept=".csv" class="custom-file-input form-control-sm">
+                        <label class="custom-file-label" for="classListFile">Import Class List</label>
+                    </div>
+
+                </div>
+                <div class="mt-4">
+                    <button type="button" id="importClassBtn" class="btn w-100"
+                        style="background-color: #60100B; color: white;">Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        flatpickr("#startTime, #endTime, #editStartTime, #editEndTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+        });
+
+        function toggleCard() {
+            let card = document.getElementById("expandableCard");
+            let form = document.getElementById("importClassForm");
+
+            card.classList.toggle("expanded");
+
+            if (form.classList.contains("show")) {
+                form.classList.remove("show");
+            } else {
+                form.classList.add("show");
+            }
+        }
+        const importClassForm = document.getElementById("importClassForm");
+        const toggleButton = document.querySelector(".toggle-button");
+
+        toggleButton.addEventListener("click", () => {
+            if (importClassForm.style.display === "none" || importClassForm.style.display === "") {
+                importClassForm.style.display = "block"; // Show on click
+            } else {
+                importClassForm.style.display = "none"; // Hide on click
+            }
+        });
+
+
+
+    </script>
+
+    <!-- JavaScript -->
+    <script>
+        const body = document.querySelector("body");
+        const darkLight = document.querySelector("#darkLight");
+        const sidebar = document.querySelector(".sidebar");
+        const submenuItems = document.querySelectorAll(".submenu_item");
+        const sidebarOpen = document.querySelector("#sidebarOpen");
+        const sidebarClose = document.querySelector(".collapse_sidebar");
+        const sidebarExpand = document.querySelector(".expand_sidebar");
+        sidebarOpen.addEventListener("click", () => sidebar.classList.toggle("close"));
+        sidebarClose.addEventListener("click", () => {
+            sidebar.classList.add("close", "hoverable");
+        });
+        sidebarExpand.addEventListener("click", () => {
+            sidebar.classList.remove("close", "hoverable");
+        });
+        sidebar.addEventListener("mouseenter", () => {
+            if (sidebar.classList.contains("hoverable")) {
+                sidebar.classList.remove("close");
+            }
+        });
+        sidebar.addEventListener("mouseleave", () => {
+            if (sidebar.classList.contains("hoverable")) {
+                sidebar.classList.add("close");
+            }
+        });
+
+        submenuItems.forEach((item, index) => {
+            item.addEventListener("click", () => {
+                item.classList.toggle("show_submenu");
+                submenuItems.forEach((item2, index2) => {
+                    if (index !== index2) {
+                        item2.classList.remove("show_submenu");
+                    }
+                });
+            });
+        });
+        if (window.innerWidth < 768) {
+            sidebar.classList.add("close");
+        } else {
+            sidebar.classList.remove("close");
+        }
+
+    </script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, set, onChildAdded, onChildChanged, onChildRemoved, remove, get, onValue } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyA0hTRuEgjrP9YQ4LwkHcSUf7xkdl9lBgI",
+            authDomain: "attendify12-ai.firebaseapp.com",
+            databaseURL: "https://attendify12-ai-default-rtdb.asia-southeast1.firebasedatabase.app/",
+            projectId: "attendify12-ai",
+            storageBucket: "attendify12-ai.firebasestorage.app",
+            messagingSenderId: "374044642888",
+            appId: "1:374044642888:web:44706986d500af43a0927d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const importButton = document.getElementById("importClassBtn");
+        const classListFile = document.getElementById("classListFile");
+        const fileLabel = document.querySelector('label[for="classListFile"]');
+        const defaultFileLabel = "Import Class List";
+
+        importButton.removeEventListener("click", importClass);
+        importButton.addEventListener("click", importClass);
+
+        classListFile.addEventListener("change", function () {
+            fileLabel.textContent = this.files.length > 0
+                ? this.files[0].name
+                : defaultFileLabel;
+        })
+
+        function showError(message) {
+            alert(message);
+            importButton.disabled = false;
+        }
+
+        function validateCsvFile(file) {
+            if (!file.name.toLowerCase().endsWith(".csv")) {
+                return "Invalid file type";
+            }
+
+            if (file.size == 0) {
+                return "Empty file";
+            }
+
+            return null;
+        }
+
+        function csvParse(text) {
+            text = text.replace(/^\uFEFF/, "");
+            const rows = [];
+            let row = [], cell = "", inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const ch = text[i];
+                if (inQuotes) {
+                    if (ch === '"' && text[i + 1] === '"') {
+                        cell += '"'; i++;
+
+                    } else if (ch === '"') {
+                        inQuotes = false;
+
+                    } else {
+                        cell += ch;
+
+                    }
+                } else if (ch === '"') {
+                    inQuotes = true;
+
+                } else if (ch === ",") {
+                    row.push(cell.trim()); cell = "";
+
+                } else if (ch === "\n" || ch === "\r") {
+                    if (ch === "\r" && text[i + 1] === "\n") i++;
+                    row.push(cell.trim()); cell = "";
+                    if (row.some(c => c !== "")) rows.push(row); // skip blank lines
+                    row = [];
+
+                } else {
+                    cell += ch;
+
+                }
+            }
+            row.push(cell.trim());
+            if (row.some(c => c !== "")) rows.push(row);
+            return rows;
+        }
+
+        function importClass() {
+            importButton.disabled = true; // Prevent multiple clicks
+
+            const teacherID = localStorage.getItem("teacherID"); // Get logged-in teacher's ID
+            if (!teacherID) {
+                alert("No teacher ID found. Please log in.");
+                importButton.disabled = false;
+                return;
+            }
+
+            const course = document.getElementById("course").value.trim();
+            const section = document.getElementById("section").value.trim();
+            const room = document.getElementById("room").value.trim();
+            const startTime = document.getElementById("startTime").value.trim();
+            const endTime = document.getElementById("endTime").value.trim();
+            const fileInput = document.getElementById("classListFile");
+
+            if (!course || !section || !room || !startTime || !endTime) {
+                alert("Please fill in all fields.");
+                importButton.disabled = false;
+                return;
+            }
+
+            const file = fileInput.files[0];
+            if (!file) {
+                showError("Please choose a .csv file");
+                return;
+            }
+
+            const fileError = validateCsvFile(file);
+            if (fileError) {
+                showError(fileError);
+                return;
+            }
+
+            const classId = `${course}-${section}-${room}-${startTime}`.replace(/\s+/g, "-");
+            const classPath = `classes/${teacherID}/${classId}`;
+            let students = [];
+
+            // Check if the class already exists
+            get(ref(db, classPath)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    alert("This class already exists. You can modify the existing class instead.");
+                    importButton.disabled = false;
+                    return;
+                }
+
+                // Process file upload
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const rows = csvParse(e.target.result);
+
+                    if (rows.length < 2) {
+                        showError("The CSV has no student rows.");
+                        return;
+                    }
+
+                    students = rows
+                        .slice(1)
+                        .filter(
+                            row => row.length >= 6
+                                && row[3] && row[2] && row[5]
+                        ).map(row => ({
+                            id: row[3],
+                            name: row[2],
+                            course: row[5]
+                        }))
+
+                    if (students.length === 0) {
+                        showError("No valid student rows found. Name, Student Number, and Course must not be empty");
+                        return;
+                    }
+
+                    saveClassToFirebase();
+                };
+
+                reader.onerror = function () {
+                    showError("Couldn't not read the file");
+                };
+
+                reader.readAsText(file);
+
+            }).catch(err => {
+                console.error("Error checking class existence:", err);
+                importButton.disabled = false;
+            });
+        }
+
+        function saveClassToFirebase() {
+            // Save class details
+            set(ref(db, classPath), {
+                course,
+                section,
+                room,
+                startTime,
+                endTime,
+                students
+            }).then(() => {
+                alert("Class imported successfully!");
+                clearInputFields();
+
+                // Push attendance records for each student
+                students.forEach(student => {
+                    const studentId = student.id || student.studentId; // Ensure we get the correct ID
+
+                    if (!studentId) {
+                        console.error("Error: studentId is missing for a student:", student);
+                        return; // Skip if studentId is undefined
+                    }
+
+                    // Generate a unique sessionId based on the current date and time
+                    const sessionId = new Date().toISOString().slice(0, 16).replace(/[:T]/g, "-"); // Format: YYYY-MM-DD-HH-mm
+
+                    // Define the attendance path in Firebase
+                    const attendancePath = `attendance/${classId}/${studentId}`;
+
+                    // Push the initial attendance record
+                    set(ref(db, attendancePath), {
+                        id: studentId,
+                        status: "-", // Default status
+                        timestamp: new Date().toISOString() // Set the timestamp
+                    }).then(() => {
+                        console.log(`Attendance initialized for ${studentId}`);
+                    }).catch(error => {
+                        console.error("Firebase Error:", error);
+                    });
+                });
+
+            }).catch(err => {
+                console.error("Error saving data:", err);
+            }).finally(() => {
+                importButton.disabled = false;
+            });
+        }
+
+        function clearInputFields() {
+            document.getElementById("course").value = '';
+            document.getElementById("section").value = '';
+            document.getElementById("room").value = '';
+            document.getElementById("startTime").value = '';
+            document.getElementById("endTime").value = '';
+            document.getElementById("classListFile").value = '';
+            fileLabel.textContent = defaultFileLabel;
+        }
+
+
+        // Change the toggle symbol based on the collapse state
+        $('#importClassForm').on('show.bs.collapse', function () {
+            $('#toggleSymbol').text('V');
+        });
+
+        $('#importClassForm').on('hide.bs.collapse', function () {
+            $('#toggleSymbol').text('^');
+        });
+
+        window.onload = function () {
+            const teacherID = localStorage.getItem("teacherID");
+
+            if (!teacherID) {
+                console.log("No teacher ID found. Redirecting to login.");
+                window.location.href = "login.html"; // Redirect if not logged in
+                return;
+            }
+
+            const attendanceRef = ref(db, `classes/${teacherID}`);
+            const classButtonsContainer = document.getElementById("classButtons");
+
+            classButtonsContainer.innerHTML = ""; // Clear previous buttons
+
+            onValue(attendanceRef, (snapshot) => {
+                classButtonsContainer.innerHTML = ""; // Clear buttons to avoid duplication
+
+                if (snapshot.exists()) {
+                    const classes = snapshot.val();
+                    console.log("Loaded classes:", classes); // Debugging step
+
+                    Object.keys(classes).forEach(classID => {
+                        const classData = classes[classID];
+
+                        if (!classData || !classData.course) {
+                            console.warn(`Missing data for class: ${classID}`, classData);
+                            return; // Skip this class if data is missing
+                        }
+
+                        addClassButton(
+                            teacherID,
+                            classID,
+                            classData.course || "Unknown Course",
+                            classData.section || "Unknown Section",
+                            classData.room || "Unknown Room",
+                            classData.startTime || "Unknown Start Time",
+                            classData.endTime || "Unknown End Time",
+                        );
+                    });
+                } else {
+                    console.log("Teacher ID from localStorage:", localStorage.getItem("userID"));
+                    classButtonsContainer.innerHTML = "<p>No classes found.</p>";
+                }
+            }, (error) => {
+                console.error("Error fetching classes:", error);
+            });
+
+        };
+
+        function removeClass(teacherId, classId, btnContainer) {
+            if (!confirm("Are you sure you want to remove this class?")) {
+                return;
+            }
+            remove(ref(db, `classes/${teacherId}/${classId}`))
+                .then(() => {
+                    btnContainer.remove();
+                    alert("Class succesfully removed.");
+                })
+                .catch((err) => {
+
+                })
+        }
+
+        function addClassButton(teacherId, classId, course, section, room, startTime, endTime) {
+            if (document.getElementById(`btn-${teacherId}-${classId}`)) return;
+
+            const btnContainer = document.createElement("div");
+            btnContainer.className = "d-flex justify-content-between align-items-center";
+
+            const btn = document.createElement("button");
+            btn.id = `btn-${teacherId}-${classId}`;
+            btn.innerText = `${course} - ${section} - ${room} (From ${startTime} to ${endTime})`;
+            btn.className = "btn class-button m-1";
+
+            // Debug Log: Make sure teacherId and classId are correctly assigned
+            console.log("Adding button for class:", { teacherId, classId });
+
+            const encodedTeacherId = encodeURIComponent(teacherId);
+            const encodedClassId = encodeURIComponent(classId);
+
+            // Debug Log
+            console.log(`Encoded URL: attendance-section.html?teacherId=${encodedTeacherId}&classId=${encodedClassId}`);
+
+            btn.onclick = () => {
+                window.location.href = `attendance-section.html?teacherId=${encodedTeacherId}&classId=${encodedClassId}`;
+            };
+
+            btnContainer.appendChild(btn);
+            if (teacherId === localStorage.getItem("teacherID")) {
+                const removeBtn = document.createElement("button");
+                removeBtn.innerText = "Remove";
+                removeBtn.className = "remove-class-btn";
+                removeBtn.onclick = () => removeClass(teacherId, classId, btnContainer);
+                btnContainer.appendChild(removeBtn);
+            }
+            document.getElementById("classButtons").appendChild(btnContainer);
+        }
+
+
+    </script>
+</body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
