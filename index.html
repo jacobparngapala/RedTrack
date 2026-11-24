@@ -116,20 +116,22 @@
                             localStorage.setItem("userName", userData.name);
                             localStorage.setItem("userRole", "Teacher");
                             console.log("Teacher logged in:", userData.teacherId, userData.name);
+
                         } else {
                             // Store Student login in localStorage
                             localStorage.setItem("userID", userData.studentId);
                             localStorage.setItem("userName", userData.name);
                             localStorage.setItem("userRole", "Student");
-                            console.log("Student logged in:", userData.studentId, userData.name); // Added console.log
-                            // Log Student login in the "logins" node
+                            console.log("Student logged in:", userData.studentId, userData.name);
                             console.log("Student login attempt:", userData.studentId, userData.name);
+
                             const loginsRef = ref(database, 'logins/');
                             push(loginsRef, {
                                 id: userData[isTeacher ? 'teacherId' : 'studentId'],
                                 name: userData.name,
                                 timestamp: new Date().toISOString(),
                                 role: isTeacher ? "Teacher" : "Student"
+
                             }).then(() => {
                                 console.log("Student login recorded in Firebase:", userData.studentId, userData.name);
                             }).catch(error => {
